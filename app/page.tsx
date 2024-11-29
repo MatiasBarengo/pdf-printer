@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getAuth } from 'firebase/auth';
 import ProductList from '@/components/ProductList'
 import CategoryList from '@/components/CategoryList'
 import AddProductForm from '@/components/AddProductForm'

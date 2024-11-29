@@ -72,9 +72,9 @@ export default function AddProductForm() {
       setCategory("");
       setImage(null);
       alert("Producto agregado exitosamente");
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error completo:', error);
-      alert(error.message);
+      alert(error instanceof Error ? error.message : 'Error desconocido');
     } finally {
       setLoading(false)
     }

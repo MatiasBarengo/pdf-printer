@@ -24,9 +24,9 @@ export default function SignUp() {
       });
       console.log('Documento de usuario creado en Firestore');
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error al registrar usuario:', error);
-      alert(`Error: ${error.message}`);
+      alert(`Error: ${(error as Error).message}`);
     } finally {
       setLoading(false);
     }

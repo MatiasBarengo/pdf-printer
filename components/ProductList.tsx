@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { collection, onSnapshot, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore"
 import { useAuth } from '@/hooks/useAuth'
 import { db } from "@/lib/firebase"
+import Image from "next/image"
 
 
 interface Product {
@@ -122,9 +123,11 @@ export default function ProductList({ searchTerm }: ProductListProps) {
           <div className="category-products">
             {productsByCategory[category]?.map((product) => (
               <div key={product.id} className="product-card border rounded p-4">
-                <img 
+                <Image 
                   src={product.imageUrl} 
-                  alt={product.name} 
+                  alt={product.name}
+                  width="200"
+                  height="140"
                   className="product-image w-full h-48 object-cover mb-2" 
                 />
                 <h3 className="product-name font-bold">{product.name}</h3>
