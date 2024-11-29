@@ -1,7 +1,6 @@
 'use client'
 
 import SignIn from '@/components/SignIn';
-import SignUp from '@/components/SignUp';
 import { useState } from 'react';
 
 export default function SignInPage() {
@@ -24,7 +23,7 @@ export default function SignInPage() {
             Registrarse
           </button>
         </div>
-        {isSignIn ? <SignIn /> : <SignUp />}
+        <SignIn />
       </div>
     </div>
   );
