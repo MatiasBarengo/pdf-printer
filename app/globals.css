@@ -2,21 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -24,4 +10,116 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
+
+@media print {
+  /* Ocultar elementos innecesarios al imprimir */
+  button, form, select, input {
+    display: none !important;
+  }
+
+  /* Estilos para el contenedor principal */
+  .container {
+    margin: 20px !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Estilos para el título */
+  h1 {
+    text-align: center !important;
+    font-size: 24px !important;
+    margin-bottom: 20px !important;
+    break-after: avoid !important;
+  }
+
+  /* Estilos para los encabezados de categoría */
+  .category-header {
+    display: block !important;
+    width: 100% !important;
+    break-before: auto !important;
+    break-after: avoid !important;
+    font-size: 1.2em !important;
+    margin: 20px 0 10px 0 !important;
+    padding: 10px 0 !important;
+    border-bottom: 2px solid #333 !important;
+    text-align: left !important;
+    background: none !important;
+    color: #333 !important;
+  }
+
+  /* Estilos para la cuadrícula de productos */
+  .product-grid {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  /* Contenedor de productos dentro de cada categoría */
+  .category-products {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 20px !important;
+    width: 100% !important;
+  }
+
+  /* Estilos para las tarjetas de producto */
+  .product-card {
+    break-inside: avoid !important;
+    font-size: 0.8em !important;
+    padding: 10px !important;
+    width: 200px !important;
+    flex: 0 0 200px !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+
+  /* Estilos para las imágenes de producto */
+  .product-image {
+    height: 140px !important;
+    object-fit: cover !important;
+  }
+
+  /* Estilos para el texto del producto */
+  .product-name {
+    font-size: 1em !important;
+    margin: 5px 0 !important;
+  }
+
+  .product-price {
+    font-size: 1em !important;
+    margin-top: 3px !important;
+  }
+
+  /* Ocultar títulos específicos */
+  .catalog-title,
+  .add-product-title,
+  .products-title {
+    display: none !important;
+  }
+}
+
+/* Estilos normales (no print) */
+.category-products {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+}
+
+.product-card {
+  width: 200px;
+  flex: 0 0 200px;
+  break-inside: avoid;
+  padding: 10px;
+  margin: 0;
+  border: 1px solid #ddd;
 }
