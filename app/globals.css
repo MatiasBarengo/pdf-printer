@@ -34,7 +34,7 @@ body {
   /* Estilos para el título */
   h1 {
     text-align: center !important;
-    font-size: 24px !important;
+    font-size: 60px !important;
     margin-bottom: 20px !important;
     break-after: avoid !important;
   }
@@ -45,13 +45,14 @@ body {
     width: 100% !important;
     break-before: auto !important;
     break-after: avoid !important;
-    font-size: 1.2em !important;
-    margin: 20px 0 10px 0 !important;
-    padding: 10px 0 !important;
-    border-bottom: 2px solid #333 !important;
-    text-align: left !important;
-    background: none !important;
-    color: #333 !important;
+    font-size: 2rem !important;
+    margin: 60px 0 30px 0 !important;
+    padding: 4px 0 !important;
+    text-align: center !important;
+    background: radial-gradient(circle at center, #fecaca, #ffffff) !important;
+    color: #2563eb !important;
+    font-weight: bold !important;
+    border-radius: 8px !important;
   }
 
   /* Estilos para la cuadrícula de productos */
@@ -67,6 +68,7 @@ body {
     flex-wrap: wrap !important;
     gap: 20px !important;
     width: 100% !important;
+    justify-content: center !important;
   }
 
   /* Estilos para las tarjetas de producto */
@@ -79,6 +81,8 @@ body {
     margin: 0 !important;
     box-shadow: none !important;
     border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    background: #ffffff !important; /* Cambiado de gradient a blanco sólido */
   }
 
   /* Estilos para las imágenes de producto */
@@ -89,13 +93,27 @@ body {
 
   /* Estilos para el texto del producto */
   .product-name {
-    font-size: 1em !important;
+    font-size: 1.2em !important;
     margin: 5px 0 !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+    display: block !important;
   }
 
+  /* Estilos para impresión */
   .product-price {
-    font-size: 1em !important;
+    font-size: 1.4em !important;
     margin-top: 3px !important;
+    font-weight: 700 !important;
+    color: #2563eb !important;
+    padding: 4px 8px !important;
+    background: #f0f7ff !important;
+    border-radius: 4px !important;
+    display: block !important;
+    text-align: center !important;
+    width: fit-content !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
   /* Ocultar títulos específicos */
@@ -103,6 +121,39 @@ body {
   .add-product-title,
   .products-title {
     display: none !important;
+  }
+
+  /* Si el encabezado está en el elemento header */
+  header {
+    display: none !important;
+  }
+
+  /* O si tiene una clase específica */
+  .catalog-header {
+    display: none !important;
+  }
+
+  /* Configuración de página sin URLs */
+  @page {
+    margin-top: 0;
+    margin-header: 0;
+    margin-footer: 0;
+    marks: none;
+  }
+
+  /* Número de página sin URL */
+  .container::after {
+    content: counter(page);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 12px;
+  }
+
+  /* Asegurarse que no se muestre la URL */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
 
@@ -113,6 +164,8 @@ body {
   flex-wrap: wrap;
   gap: 20px;
   width: 100%;
+  margin-bottom: 30px;
+  justify-content: center;
 }
 
 .product-card {
@@ -122,4 +175,47 @@ body {
   padding: 10px;
   margin: 0;
   border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #ffffff; /* Cambiado de gradient a blanco sólido */
+}
+
+.category-header {
+  display: block;
+  width: 100%;
+  background: radial-gradient(circle at center, #ffffff, #fecaca);
+  padding: 4px 0;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2563eb;
+  margin: 30px 0 15px 0;
+  border-radius: 8px;
+}
+
+.category-header:first-of-type {
+  margin-top: 0;
+}
+
+/* Agregar estilos para nombre y precio del producto */
+.product-name {
+  font-size: 1.2rem;
+  margin: 5px 0;
+  font-weight: 500;
+  text-align: center;
+  display: block;
+}
+
+.product-price {
+  font-size: 1.4rem;
+  margin-top: 3px;
+  font-weight: 700;
+  color: #2563eb;
+  padding: 4px 8px;
+  background: #f0f7ff;
+  border-radius: 4px;
+  display: block;
+  text-align: center;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }

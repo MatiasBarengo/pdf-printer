@@ -1,8 +1,19 @@
 "use client"
 
-export default function PrintButton() {
-  const handlePrint = () => {
-    window.print()
+interface PrintButtonProps {
+  onBeforePrint: () => Promise<void>;
+}
+
+export default function PrintButton({ onBeforePrint }: PrintButtonProps) {
+  const handlePrint = async () => {
+    // Scroll suave al final de la página
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+    
+    // Esperamos a que termine el scroll antes de continuar
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    await onBeforePrint();
+    window.print();
   }
 
   return (

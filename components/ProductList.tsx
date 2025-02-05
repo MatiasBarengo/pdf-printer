@@ -117,40 +117,42 @@ export default function ProductList({ searchTerm }: ProductListProps) {
 
   return (
     <div className="product-grid">
-      {categories.map(category => (
-        <div key={category} className="category-section">
-          <h2 className="category-header">{category}</h2>
-          <div className="category-products">
-            {productsByCategory[category]?.map((product) => (
-              <div key={product.id} className="product-card border rounded p-4">
-                <Image 
-                  src={product.imageUrl} 
-                  alt={product.name}
-                  width="200"
-                  height="140"
-                  className="product-image w-full h-48 object-cover mb-2" 
-                />
-                <h3 className="product-name font-bold">{product.name}</h3>
-                <p className="product-price">Precio: ${product.price}</p>
-                <div className="flex gap-2 mt-2">
-                  <button
-                    onClick={() => handleEdit(product)}
-                    className="bg-blue-500 text-white px-2 py-1 rounded"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(product.id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded"
-                  >
-                    Eliminar
-                  </button>
+      {categories
+        .filter(category => productsByCategory[category]?.length > 0)
+        .map(category => (
+          <div key={category} className="category-section">
+            <h2 className="category-header text-center text-2xl font-bold text-blue-600 my-4">{category}</h2>
+            <div className="category-products">
+              {productsByCategory[category]?.map((product) => (
+                <div key={product.id} className="product-card border rounded p-4">
+                  <Image 
+                    src={product.imageUrl} 
+                    alt={product.name}
+                    width="200"
+                    height="140"
+                    className="product-image w-full h-48 object-cover mb-2" 
+                  />
+                  <h3 className="product-name font-bold">{product.name}</h3>
+                  <p className="product-price">${product.price}</p>
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      onClick={() => handleEdit(product)}
+                      className="bg-blue-500 text-white px-2 py-1 rounded"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product.id)}
+                      className="bg-red-500 text-white px-2 py-1 rounded"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
 
       {/* Modal de edición */}
       {editingProduct && (
