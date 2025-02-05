@@ -79,7 +79,7 @@ export default function CategoryList() {
           <div className="bg-white p-6 rounded-xl max-w-md w-full shadow-lg">
             <h2 className="text-xl font-bold mb-4 text-gray-800">Confirmar eliminación</h2>
             <p className="mb-6 text-gray-600">
-              ¿Estás seguro que deseas eliminar la categoría <span className="font-medium text-gray-800">"{selectedCategory?.name}"</span>?
+              ¿Estás seguro que deseas eliminar la categoría <span className="font-medium text-gray-800">&quot;{selectedCategory?.name}&quot;</span>?
               Esta acción es irreversible y se perderán todos los productos asociados
               a esta categoría.
             </p>

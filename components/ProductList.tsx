@@ -190,10 +190,12 @@ export default function ProductList({ searchTerm }: ProductListProps) {
                 className="block w-full p-2 border rounded"
               />
               {editingProduct.imageUrl && (
-                <img 
+                <Image
                   src={editingProduct.imageUrl} 
                   alt="Preview" 
-                  className="mt-2 w-32 h-32 object-cover"
+                  height={32}
+                  width={32}
+                  className="mt-2 object-cover"
                 />
               )}
             </div>

@@ -7,7 +7,6 @@ import AddProductForm from '@/components/AddProductForm'
 import AddCategoryForm from '@/components/AddCategoryForm'
 import PrintButton from '@/components/PrintButton'
 import Spinner from '@/components/Spinner'
-import Image from 'next/image';
 
 export default function Home() {
   const router = useRouter();
