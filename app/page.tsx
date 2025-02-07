@@ -7,6 +7,7 @@ import AddProductForm from '@/components/AddProductForm'
 import AddCategoryForm from '@/components/AddCategoryForm'
 import PrintButton from '@/components/PrintButton'
 import Spinner from '@/components/Spinner'
+import Header from '@/components/Header'
 
 export default function Home() {
   const router = useRouter();
@@ -50,13 +51,9 @@ export default function Home() {
   }
 
   return (
-    <>
-      <div className='flex flex-col items-center bg-gradient-to-r from-white via-red-200 to-white'>
-        <div className='transform hover:scale-105 transition-transform duration-300'>
-          <h1 className="text-[80px] font-bold italic text-blue-600 tracking-wider py-4">DISTRIBUIDORA LYR</h1>
-        </div>
-      </div>
-      <main className="container mx-auto p-4">
+    <div className='container mx-auto'>
+      <Header />
+      <div>
         <div className="mb-4">
           <button onClick={() => setActiveTab('productos')} className={`mr-4 p-2 rounded-md ${activeTab === 'productos' ? 'font-bold bg-blue-500 text-white' : ''}`}>
             Productos
@@ -94,7 +91,7 @@ export default function Home() {
           </div>
         )}
         
-      </main>
+      </div>
       
       {showScrollTop && (
         <button
@@ -118,6 +115,6 @@ export default function Home() {
           </svg>
         </button>
       )}
-    </>
+    </div>
   )
 }

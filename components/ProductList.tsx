@@ -45,10 +45,10 @@ export default function ProductList({ searchTerm }: ProductListProps) {
     return () => unsubscribe()
   }, [isAuthenticated])
 
-  // Filtrar productos basado en el término de búsqueda
-  const filteredProducts = products.filter((product) => 
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filtrar productos basado en el término de búsqueda y ordenar por nombre
+  const filteredProducts = products
+    .filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   // Agrupar productos filtrados por categoría
   const productsByCategory = filteredProducts.reduce((acc, product) => {
