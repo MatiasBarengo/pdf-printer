@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore'
+import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, serverTimestamp, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -10,7 +10,7 @@ interface CustomList {
   name: string;
   productIds: string[];
   userId: string;
-  createdAt: any;
+  createdAt: Timestamp;
 }
 
 export default function CustomLists({ onSelectList }: { onSelectList: (listId: string | null) => void }) {
