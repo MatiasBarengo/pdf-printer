@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, onSnapshot, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore"
+import { collection, onSnapshot, getDocs, deleteDoc, doc, updateDoc, query, where, arrayUnion, arrayRemove } from "firebase/firestore"
 import { useAuth } from '@/hooks/useAuth'
 import { db } from "@/lib/firebase"
 import Image from "next/image"
@@ -15,17 +15,29 @@ interface Product {
   imageUrl: string
 }
 
-interface ProductListProps {
-  searchTerm: string;
+interface CustomList {
+  id: string;
+  name: string;
+  productIds: string[];
+  userId: string;
+  createdAt: any;
 }
 
-export default function ProductList({ searchTerm }: ProductListProps) {
+interface ProductListProps {
+  searchTerm: string;
+  listId: string | null;
+}
+
+export default function ProductList({ searchTerm, listId }: ProductListProps) {
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<string[]>([])
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-  const isAuthenticated = useAuth()
+  const [currentList, setCurrentList] = useState<CustomList | null>(null)
+  const [userLists, setUserLists] = useState<CustomList[]>([])
+  const user = useAuth()
 
   useEffect(() => {
+    // Suscripción a productos
     const unsubscribe = onSnapshot(collection(db, "productos"), (snapshot) => {
       const productList = snapshot.docs.map(doc => ({
         id: doc.id,
@@ -34,7 +46,20 @@ export default function ProductList({ searchTerm }: ProductListProps) {
       setProducts(productList)
     })
 
-    // Fetch categories and sort them
+    // Suscripción a la lista actual si hay un listId
+    let unsubscribeList = () => {}
+    if (listId && user) {
+      const listQuery = doc(db, "customLists", listId)
+      unsubscribeList = onSnapshot(listQuery, (doc) => {
+        if (doc.exists()) {
+          setCurrentList({ id: doc.id, ...doc.data() } as CustomList)
+        }
+      })
+    } else {
+      setCurrentList(null)
+    }
+
+    // Fetch categories
     const fetchCategories = async () => {
       const snapshot = await getDocs(collection(db, "categorias"))
       const categoryList = snapshot.docs.map(doc => doc.data().name)
@@ -42,13 +67,37 @@ export default function ProductList({ searchTerm }: ProductListProps) {
     }
     fetchCategories()
 
-    return () => unsubscribe()
-  }, [isAuthenticated])
+    // Suscripción a las listas del usuario
+    let unsubscribeUserLists = () => {}
+    if (user) {
+      const userListsQuery = query(
+        collection(db, "customLists"), 
+        where("userId", "==", user.uid)
+      )
+      unsubscribeUserLists = onSnapshot(userListsQuery, (snapshot) => {
+        const lists = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as CustomList[]
+        setUserLists(lists)
+      })
+    }
 
-  // Filtrar productos basado en el término de búsqueda y ordenar por nombre
+    return () => {
+      unsubscribe()
+      unsubscribeList()
+      unsubscribeUserLists()
+    }
+  }, [listId, user])
+
+  // Filtrar productos basado en el término de búsqueda y la lista actual
   const filteredProducts = products
-    .filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .filter((product) => {
+      const nameMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      if (!currentList) return nameMatch // lista principal
+      return nameMatch && currentList.productIds.includes(product.id)
+    })
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   // Agrupar productos filtrados por categoría
   const productsByCategory = filteredProducts.reduce((acc, product) => {
@@ -58,6 +107,31 @@ export default function ProductList({ searchTerm }: ProductListProps) {
     acc[product.category].push(product)
     return acc
   }, {} as Record<string, Product[]>)
+
+  // Función para agregar producto a una lista
+  const handleAddToList = async (productId: string, targetListId: string) => {
+    try {
+      const listRef = doc(db, "customLists", targetListId)
+      await updateDoc(listRef, {
+        productIds: arrayUnion(productId)
+      })
+    } catch (error) {
+      console.error("Error al agregar producto a la lista:", error)
+    }
+  }
+
+  // Función para remover producto de una lista
+  const handleRemoveFromList = async (productId: string) => {
+    if (!listId) return
+    try {
+      const listRef = doc(db, "customLists", listId)
+      await updateDoc(listRef, {
+        productIds: arrayRemove(productId)
+      })
+    } catch (error) {
+      console.error("Error al remover producto de la lista:", error)
+    }
+  }
 
   const handleDelete = async (productId: string) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
@@ -121,7 +195,9 @@ export default function ProductList({ searchTerm }: ProductListProps) {
         .filter(category => productsByCategory[category]?.length > 0)
         .map(category => (
           <div key={category} className="category-section">
-            <h2 className="category-header text-center text-2xl font-bold text-blue-600 my-4">{category}</h2>
+            <h2 className="category-header text-center text-2xl font-bold text-blue-600 my-4">
+              {category}
+            </h2>
             <div className="category-products">
               {productsByCategory[category]?.map((product) => (
                 <div key={product.id} className="product-card border rounded p-4">
@@ -135,19 +211,50 @@ export default function ProductList({ searchTerm }: ProductListProps) {
                   <h3 className="product-name font-bold">{product.name}</h3>
                   <p className="product-price">${product.price}</p>
                   <div className="flex gap-2 mt-2">
-                    <button
-                      onClick={() => handleEdit(product)}
-                      className="bg-blue-500 text-white px-2 py-1 rounded"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="bg-red-500 text-white px-2 py-1 rounded"
-                    >
-                      Eliminar
-                    </button>
+                    {user && (
+                      <>
+                        <button
+                          onClick={() => handleEdit(product)}
+                          className="bg-blue-500 text-white px-2 py-1 rounded"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          onClick={() => handleDelete(product.id)}
+                          className="bg-red-500 text-white px-2 py-1 rounded"
+                        >
+                          Eliminar
+                        </button>
+                      </>
+                    )}
                   </div>
+
+                  {/* Botones de lista */}
+                  {user && (
+                    <div className="mt-2">
+                      {!listId ? (
+                        <select
+                          onChange={(e) => handleAddToList(product.id, e.target.value)}
+                          className="w-full p-2 border rounded"
+                          defaultValue=""
+                        >
+                          <option value="" disabled>Agregar a lista...</option>
+                          {userLists.map(list => (
+                            <option key={list.id} value={list.id}>
+                              {list.name}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <button
+                          onClick={() => handleRemoveFromList(product.id)}
+                          className="w-full bg-red-500 text-white px-2 py-1 rounded"
+                        >
+                          Quitar de la lista
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

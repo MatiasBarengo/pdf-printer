@@ -8,12 +8,16 @@ import AddCategoryForm from '@/components/AddCategoryForm'
 import PrintButton from '@/components/PrintButton'
 import Spinner from '@/components/Spinner'
 import Header from '@/components/Header'
+import { useAuth } from '@/hooks/useAuth';
+import CustomLists from '@/components/CustomLists';
 
 export default function Home() {
+  const user = useAuth()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedListId, setSelectedListId] = useState<string | null>(null)
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('productos');
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   const handleBeforePrint = async () => {
@@ -67,18 +71,25 @@ export default function Home() {
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-4 add-product-title">Agregar Nuevo Producto</h2>
             <AddProductForm />
-            <div className="mb-4">
+            <div className="mb-6">
               <input
                 type="text"
-                placeholder="Buscar productos..."
-                className="w-full p-2 border rounded mt-8"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Buscar productos..."
+                className="w-full p-2 border rounded"
               />
             </div>
             
             <PrintButton onBeforePrint={handleBeforePrint} />
-            <ProductList searchTerm={searchTerm} />
+            {user && (
+              <CustomLists onSelectList={setSelectedListId} />
+            )}
+
+            <ProductList
+              searchTerm={searchTerm}
+              listId={selectedListId}
+            />
           </div>
         )}
 
