@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, onSnapshot, getDocs, deleteDoc, doc, updateDoc, query, where, arrayUnion, arrayRemove, Timestamp } from "firebase/firestore"
+import { collection, onSnapshot, getDocs, deleteDoc, doc, updateDoc, query, where, Timestamp, deleteField } from "firebase/firestore"
 import { useAuth } from '@/hooks/useAuth'
 import { db } from "@/lib/firebase"
 import Image from "next/image"
@@ -15,10 +15,17 @@ interface Product {
   imageUrl: string
 }
 
+interface CustomListProduct {
+  customPrice: number;
+  originalPrice: number;
+}
+
 interface CustomList {
   id: string;
   name: string;
-  productIds: string[];
+  products: {
+    [productId: string]: CustomListProduct;
+  };
   userId: string;
   createdAt: Timestamp;
 }
@@ -95,7 +102,7 @@ export default function ProductList({ searchTerm, listId }: ProductListProps) {
     .filter((product) => {
       const nameMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase())
       if (!currentList) return nameMatch // lista principal
-      return nameMatch && currentList.productIds.includes(product.id)
+      return nameMatch && currentList.products && product.id in currentList.products
     })
     .sort((a, b) => a.name.localeCompare(b.name))
 
@@ -111,27 +118,33 @@ export default function ProductList({ searchTerm, listId }: ProductListProps) {
   // Función para agregar producto a una lista
   const handleAddToList = async (productId: string, targetListId: string) => {
     try {
-      const listRef = doc(db, "customLists", targetListId)
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      const listRef = doc(db, "customLists", targetListId);
       await updateDoc(listRef, {
-        productIds: arrayUnion(productId)
-      })
+        [`products.${productId}`]: {
+          customPrice: product.price,
+          originalPrice: product.price
+        }
+      });
     } catch (error) {
-      console.error("Error al agregar producto a la lista:", error)
+      console.error("Error al agregar producto a la lista:", error);
     }
-  }
+  };
 
   // Función para remover producto de una lista
   const handleRemoveFromList = async (productId: string) => {
-    if (!listId) return
+    if (!listId) return;
     try {
-      const listRef = doc(db, "customLists", listId)
+      const listRef = doc(db, "customLists", listId);
       await updateDoc(listRef, {
-        productIds: arrayRemove(productId)
-      })
+        [`products.${productId}`]: deleteField()
+      });
     } catch (error) {
-      console.error("Error al remover producto de la lista:", error)
+      console.error("Error al remover producto de la lista:", error);
     }
-  }
+  };
 
   const handleDelete = async (productId: string) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
@@ -189,6 +202,19 @@ export default function ProductList({ searchTerm, listId }: ProductListProps) {
     }
   }
 
+  const handleUpdateCustomPrice = async (productId: string, newPrice: number) => {
+    if (!listId || !currentList) return;
+    
+    try {
+      const listRef = doc(db, "customLists", listId);
+      await updateDoc(listRef, {
+        [`products.${productId}.customPrice`]: newPrice
+      });
+    } catch (error) {
+      console.error("Error al actualizar precio:", error);
+    }
+  };
+
   return (
     <div className="product-grid">
       {categories
@@ -209,7 +235,27 @@ export default function ProductList({ searchTerm, listId }: ProductListProps) {
                     className="product-image w-full h-48 object-cover mb-2" 
                   />
                   <h3 className="product-name font-bold">{product.name}</h3>
-                  <p className="product-price">${product.price}</p>
+                  
+                  {/* Mostrar precio según si es lista personalizada o principal */}
+                  <p className="product-price">
+                    ${currentList?.products?.[product.id]?.customPrice ?? product.price}
+                  </p>
+
+                  {/* Agregar input para editar precio si estamos en una lista */}
+                  {listId && (
+                    <div className="mt-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Precio personalizado
+                      </label>
+                      <input
+                        type="number"
+                        value={currentList?.products?.[product.id]?.customPrice ?? product.price}
+                        onChange={(e) => handleUpdateCustomPrice(product.id, Number(e.target.value))}
+                        className="mt-1 block w-full border rounded-md shadow-sm p-2"
+                      />
+                    </div>
+                  )}
+
                   <div className="flex gap-2 mt-2">
                     {user && (
                       <>

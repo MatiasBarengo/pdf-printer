@@ -21,8 +21,26 @@ export default function Home() {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   const handleBeforePrint = async () => {
-    window.scrollTo(0, document.body.scrollHeight);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Asegurarse de que la página esté completamente cargada
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Obtener todos los elementos de producto
+    const productElements = document.querySelectorAll('.product-card');
+    if (productElements.length === 0) {
+      console.warn('No se encontraron productos para imprimir');
+      return;
+    }
+
+    // Asegurarse de que todos los elementos sean visibles
+    productElements.forEach(element => {
+      (element as HTMLElement).style.pageBreakInside = 'avoid';
+    });
+
+    // Asegurarse de que las categorías no se corten
+    const categoryElements = document.querySelectorAll('.category-section');
+    categoryElements.forEach(element => {
+      (element as HTMLElement).style.pageBreakBefore = 'always';
+    });
   };
 
   useEffect(() => {

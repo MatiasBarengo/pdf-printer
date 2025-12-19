@@ -5,10 +5,17 @@ import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, serverTim
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/hooks/useAuth'
 
+interface CustomListProduct {
+  customPrice: number;
+  originalPrice: number;
+}
+
 interface CustomList {
   id: string;
   name: string;
-  productIds: string[];
+  products: {
+    [productId: string]: CustomListProduct;
+  };
   userId: string;
   createdAt: Timestamp;
 }
@@ -45,7 +52,7 @@ export default function CustomLists({ onSelectList }: { onSelectList: (listId: s
     try {
       await addDoc(collection(db, 'customLists'), {
         name: newListName.trim(),
-        productIds: [],
+        products: {},
         userId: isAuthenticated.uid,
         createdAt: serverTimestamp()
       })
