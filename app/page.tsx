@@ -36,10 +36,15 @@ export default function Home() {
       (element as HTMLElement).style.pageBreakInside = 'avoid';
     });
 
-    // Asegurarse de que las categorías no se corten
+    // Asegurarse de que las categorías no se corten, excepto la primera
     const categoryElements = document.querySelectorAll('.category-section');
-    categoryElements.forEach(element => {
-      (element as HTMLElement).style.pageBreakBefore = 'always';
+    categoryElements.forEach((element, index) => {
+      // La primera categoría no debe tener salto de página antes
+      if (index > 0) {
+        (element as HTMLElement).style.pageBreakBefore = 'always';
+      } else {
+        (element as HTMLElement).style.pageBreakBefore = 'auto';
+      }
     });
   };
 

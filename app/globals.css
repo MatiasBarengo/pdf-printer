@@ -26,10 +26,29 @@ body {
 
   /* Estilos para el contenedor principal */
   .container {
-    margin: 20px 0 0 !important;
-    padding: 0 20px 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
     max-width: none !important;
-    page-break-before: always !important;
+  }
+
+  /* El contenido después del header debe comenzar en la siguiente página sin espacio adicional */
+  .container > .print-header ~ * {
+    page-break-before: auto !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  /* El grid de productos debe comenzar inmediatamente después del header */
+  .product-grid {
+    page-break-before: auto !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  /* El div que contiene los productos no debe tener márgenes */
+  .container > div:not(.print-header) {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
 
   /* Estilos para el título */
@@ -162,13 +181,36 @@ body {
     margin-top: 0 !important;
   }
 
+  /* Centrar el contenido del header en la primera página */
+  .print-header > div {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: calc(100vh - 4rem) !important;
+  }
+
+  /* Asegurar que el header ocupe toda la primera página */
+  .container .print-header:first-child {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 2rem !important;
+  }
+
   /* Ajustar los encabezados de categoría */
   .category-header {
     margin-top: 40px !important;
   }
 
-  .category-header:first-of-type {
-    margin-top: 40px !important;
+  /* El primer encabezado de categoría después del header no debe tener salto de página antes */
+  .print-header ~ * .category-header:first-of-type {
+    margin-top: 0 !important;
+    page-break-before: auto !important;
   }
 
   /* Asegurar que cada nueva sección comience con espacio adecuado */
@@ -192,21 +234,32 @@ body {
     color-adjust: exact !important;
   }
 
-  /* Mover todo el contenido hacia abajo */
-  .category-header,
-  .category-products,
-  h1 {
+  /* Mover todo el contenido hacia abajo, excepto el primero después del header */
+  .print-header ~ * .category-header,
+  .print-header ~ * .category-products,
+  .print-header ~ * h1 {
     position: relative !important;
     top: 40px !important;
   }
 
+  /* El primer elemento después del header no debe tener desplazamiento */
+  .print-header ~ *:first-child .category-header:first-of-type {
+    top: 0 !important;
+  }
+
   /* Estilos específicos para el header en impresión */
   .print-header {
-    display: grid !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
     width: 100% !important;
+    min-height: 100vh !important;
     background: linear-gradient(to right, #fff7ed, #fee2e2, #fff7ed) !important;
     padding: 2rem 1.5rem !important;
     position: relative !important;
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
   }
 
   .print-header .grid {
@@ -243,6 +296,45 @@ body {
     display: block !important;
     width: auto !important;
     height: auto !important;
+  }
+
+  /* Hacer el logo LYR más grande en impresión */
+  .print-header-lyr-logo {
+    width: 400px !important;
+    height: 400px !important;
+    min-width: 400px !important;
+    min-height: 400px !important;
+  }
+
+  .print-header-lyr-logo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+  }
+
+  /* Hacer los logos laterales más grandes en impresión */
+  .print-header-cremigal-logo {
+    width: 150px !important;
+    height: auto !important;
+    min-width: 150px !important;
+  }
+
+  .print-header-cremigal-logo img {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+
+  .print-header-punta-logo {
+    width: 150px !important;
+    height: auto !important;
+    min-width: 150px !important;
+  }
+
+  .print-header-punta-logo img {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
   }
 
   /* Ajustar el título */
