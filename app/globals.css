@@ -188,7 +188,7 @@ body {
     justify-content: center !important;
     align-items: center !important;
     width: 100% !important;
-    min-height: calc(100vh - 4rem) !important;
+    min-height: auto !important;
   }
 
   /* Asegurar que el header ocupe toda la primera página */
@@ -197,9 +197,9 @@ body {
     flex-direction: column !important;
     justify-content: center !important;
     align-items: center !important;
-    min-height: 100vh !important;
+    min-height: 82vh !important;
     margin: 0 !important;
-    padding: 2rem !important;
+    padding: 1rem !important;
   }
 
   /* Ajustar los encabezados de categoría */
@@ -254,9 +254,9 @@ body {
     justify-content: center !important;
     align-items: center !important;
     width: 100% !important;
-    min-height: 100vh !important;
+    min-height: 82vh !important;
     background: linear-gradient(to right, #fff7ed, #fee2e2, #fff7ed) !important;
-    padding: 2rem 1.5rem !important;
+    padding: 1rem 1rem !important;
     position: relative !important;
     page-break-after: always !important;
     page-break-inside: avoid !important;
@@ -267,13 +267,6 @@ body {
     grid-template-columns: repeat(3, 1fr) !important;
     align-items: center !important;
     gap: 1rem !important;
-  }
-
-  /* Mantener los bordes decorativos */
-  .print-header .h-2 {
-    display: block !important;
-    height: 0.5rem !important;
-    background: linear-gradient(to right, #2563eb, #ef4444, #2563eb) !important;
   }
 
   /* Ajustes para las imágenes laterales */
@@ -288,7 +281,17 @@ body {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 1rem !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Reducir padding del contenedor interno del header */
+  .print-header-content {
+    padding: 0.75rem 1rem !important;
+  }
+
+  /* Reducir gap entre logos */
+  .print-header-row {
+    gap: 0.5rem !important;
   }
 
   /* Asegurar que las imágenes se muestren */
@@ -300,10 +303,10 @@ body {
 
   /* Hacer el logo LYR más grande en impresión */
   .print-header-lyr-logo {
-    width: 400px !important;
-    height: 400px !important;
-    min-width: 400px !important;
-    min-height: 400px !important;
+    width: 420px !important;
+    height: 420px !important;
+    min-width: 420px !important;
+    min-height: 420px !important;
   }
 
   .print-header-lyr-logo img {
@@ -314,9 +317,9 @@ body {
 
   /* Hacer los logos laterales más grandes en impresión */
   .print-header-cremigal-logo {
-    width: 150px !important;
+    width: 160px !important;
     height: auto !important;
-    min-width: 150px !important;
+    min-width: 160px !important;
   }
 
   .print-header-cremigal-logo img {
@@ -326,9 +329,9 @@ body {
   }
 
   .print-header-punta-logo {
-    width: 150px !important;
+    width: 130px !important;
     height: auto !important;
-    min-width: 150px !important;
+    min-width: 130px !important;
   }
 
   .print-header-punta-logo img {

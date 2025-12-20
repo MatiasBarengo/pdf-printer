@@ -8,9 +8,6 @@ export default function Header() {
 
             {/* Content Container */}
             <div className="relative px-6 py-8 print-header-content">
-                {/* Top Decorative Border */}
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-600 via-red-500 to-blue-600"></div>
-
                 {/* Main Content - Flex Row */}
                 <div className="flex flex-row items-center justify-between print-header-row">
                     <div className="print-header-cremigal-logo">
@@ -41,9 +38,6 @@ export default function Header() {
                         />
                     </div>
                 </div>
-
-                {/* Bottom Decorative Border */}
-                <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-600 via-red-500 to-blue-600"></div>
             </div>
         </div>
     )
